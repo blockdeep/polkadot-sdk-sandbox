@@ -21,9 +21,7 @@ use sc_executor_common::{
 	error::{Error, WasmError},
 	wasm_runtime::{AllocationStats, WasmInstance, WasmModule},
 };
-use sp_wasm_interface::{
-	Function, FunctionContext, HostFunctions, Pointer, Value, ValueType, WordSize,
-};
+use sp_wasm_interface::{Function, FunctionContext, HostFunctions, Pointer, Sandbox, Value, ValueType, WordSize};
 
 #[repr(transparent)]
 pub struct InstancePre(polkavm::InstancePre<()>);
@@ -152,6 +150,10 @@ impl<'r, 'a> FunctionContext for Context<'r, 'a> {
 
 	fn register_panic_error_message(&mut self, _message: &str) {
 		unimplemented!("'register_panic_error_message' is never used when running under PolkaVM");
+	}
+
+	fn sandbox(&mut self) -> &mut dyn Sandbox {
+		unimplemented!("This is not meant to occur!");
 	}
 }
 

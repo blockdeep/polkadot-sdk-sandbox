@@ -99,6 +99,9 @@ pub enum Error {
 
 	#[error("Output exceeds bounds of wasm memory")]
 	OutputExceedsBounds,
+
+	#[error("Sandbox error: {0}")]
+	Sandbox(String),
 }
 
 impl From<&'static str> for Error {
@@ -112,6 +115,8 @@ impl From<String> for Error {
 		Error::Other(err)
 	}
 }
+
+impl wasmi::HostError for Error {}
 
 /// Type for errors occurring during Wasm runtime construction.
 #[derive(Debug, thiserror::Error)]

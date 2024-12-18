@@ -38,6 +38,9 @@ sc-executor-common.default-features = true
 sp-runtime-interface.workspace = true
 sp-runtime-interface.default-features = true
 sp-wasm-interface = { features = ["wasmtime"], workspace = true, default-features = true }
+sp-sandbox.workspace = true
+sp-sandbox.default-features = true
+codec = { workspace = true, features = ["derive"] }
 
 # Here we include the rustix crate in the exactly same semver-compatible version as used by
 # wasmtime and enable its 'use-libc' flag.

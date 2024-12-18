@@ -24,7 +24,7 @@ use std::sync::Arc;
 use crate::runtime::{InstanceCounter, ReleaseInstanceHandle, Store, StoreData};
 use sc_executor_common::error::{Backtrace, Error, MessageWithBacktrace, Result, WasmError};
 use sp_wasm_interface::{Pointer, WordSize};
-use wasmtime::{AsContext, AsContextMut, Engine, Instance, InstancePre, Memory};
+use wasmtime::{AsContext, AsContextMut, Engine, Extern, Instance, InstancePre, Memory, Table};
 
 /// Wasm blob entry point.
 pub struct EntryPoint(wasmtime::TypedFunc<(u32, u32), u64>);
@@ -121,6 +121,22 @@ pub struct InstanceWrapper {
 	_release_instance_handle: ReleaseInstanceHandle,
 }
 
+fn extern_table(extern_: &Extern) -> Option<&Table> {
+	match extern_ {
+		Extern::Table(table) => Some(table),
+		_ => None,
+	}
+}
+
+/// Extract the table from the given instance if any.
+fn get_table(instance: &Instance, ctx: &mut Store) -> Option<Table> {
+	instance
+		.get_export(ctx, "__indirect_function_table")
+		.as_ref()
+		.and_then(extern_table)
+		.cloned()
+}
+
 impl InstanceWrapper {
 	pub(crate) fn new(
 		engine: &Engine,
@@ -137,8 +153,10 @@ impl InstanceWrapper {
 		})?;
 
 		let memory = get_linear_memory(&instance, &mut store)?;
+		let table = get_table(&instance, &mut store);
 
 		store.data_mut().memory = Some(memory);
+		store.data_mut().table = table;
 
 		Ok(InstanceWrapper { instance, store, _release_instance_handle })
 	}

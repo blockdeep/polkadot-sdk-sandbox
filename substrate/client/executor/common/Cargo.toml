@@ -26,6 +26,10 @@ sp-maybe-compressed-blob.default-features = true
 sp-wasm-interface.workspace = true
 sp-wasm-interface.default-features = true
 polkavm = { workspace = true }
+wasmer = { workspace = true, features = ["singlepass"] }
+codec = { features = ["derive"], workspace = true }
+environmental = { workspace = true }
+wasmi = { version = "0.13", default-features = false }
 
 [features]
 default = []

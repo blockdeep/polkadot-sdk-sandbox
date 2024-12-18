@@ -24,6 +24,24 @@ use sc_executor_common::{
 use sp_wasm_interface::Pointer;
 use wasmtime::{AsContext, AsContextMut};
 
+/// Read data from a slice of memory into a newly allocated buffer.
+///
+/// Returns an error if the read would go out of the memory bounds.
+pub(crate) fn read_memory(
+	ctx: impl AsContext<Data = StoreData>,
+	source_addr: Pointer<u8>,
+	size: usize,
+) -> Result<Vec<u8>> {
+	let range =
+		checked_range(source_addr.into(), size, ctx.as_context().data().memory().data_size(&ctx))
+			.ok_or_else(|| Error::Other("memory read is out of bounds".into()))?;
+
+	let mut buffer = vec![0; range.len()];
+	read_memory_into(ctx, source_addr, &mut buffer)?;
+
+	Ok(buffer)
+}
+
 /// Read data from the instance memory into a slice.
 ///
 /// Returns an error if the read would go out of the memory bounds.

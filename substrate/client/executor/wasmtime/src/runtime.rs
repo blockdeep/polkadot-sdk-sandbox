@@ -41,19 +41,29 @@ use std::{
 		Arc,
 	},
 };
-use wasmtime::{AsContext, Engine, Memory};
+use wasmtime::{AsContext, Engine, Memory, StoreLimits, Table};
 
 const MAX_INSTANCE_COUNT: u32 = 64;
 
 #[derive(Default)]
 pub(crate) struct StoreData {
+	/// The limits we apply to the store. We need to store it here to return a reference to this
+	/// object when we have the limits enabled.
+	pub(crate) limits: StoreLimits,
 	/// This will only be set when we call into the runtime.
 	pub(crate) host_state: Option<HostState>,
 	/// This will be always set once the store is initialized.
 	pub(crate) memory: Option<Memory>,
+	/// This will be set only if the runtime actually contains a table.
+	pub(crate) table: Option<Table>,
 }
 
 impl StoreData {
+	/// Returns a reference to the host state.
+	pub fn host_state(&self) -> Option<&HostState> {
+		self.host_state.as_ref()
+	}
+
 	/// Returns a mutable reference to the host state.
 	pub fn host_state_mut(&mut self) -> Option<&mut HostState> {
 		self.host_state.as_mut()
@@ -62,6 +72,11 @@ impl StoreData {
 	/// Returns the host memory.
 	pub fn memory(&self) -> Memory {
 		self.memory.expect("memory is always set; qed")
+	}
+
+	/// Returns the host table.
+	pub fn table(&self) -> Option<Table> {
+		self.table
 	}
 }
 

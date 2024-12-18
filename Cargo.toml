@@ -1257,6 +1257,7 @@ sp-runtime-interface = { path = "substrate/primitives/runtime-interface", defaul
 sp-runtime-interface-proc-macro = { path = "substrate/primitives/runtime-interface/proc-macro", default-features = false, version = "18.0.0" }
 sp-runtime-interface-test-wasm = { path = "substrate/primitives/runtime-interface/test-wasm", version = "2.0.0" }
 sp-runtime-interface-test-wasm-deprecated = { path = "substrate/primitives/runtime-interface/test-wasm-deprecated", version = "2.0.0" }
+sp-sandbox = { path = "substrate/primitives/sandbox", default-features = false, version = "0.1.0" }
 sp-session = { path = "substrate/primitives/session", default-features = false, version = "36.0.0" }
 sp-staking = { path = "substrate/primitives/staking", default-features = false, version = "36.0.0" }
 sp-state-machine = { path = "substrate/primitives/state-machine", default-features = false, version = "0.43.0" }
@@ -1348,6 +1349,7 @@ wasm-instrument = { version = "0.4", default-features = false }
 wasm-opt = { version = "0.116" }
 wasm-timer = { version = "0.2.5" }
 wasmi = { version = "0.32.3", default-features = false }
+wasmer = { version = "2.2", features = ["singlepass"] }
 wasmtime = { version = "8.0.1", default-features = false }
 wat = { version = "1.0.0" }
 westend-emulated-chain = { path = "cumulus/parachains/integration-tests/emulated/chains/relays/westend", default-features = false, version = "0.1.0" }
